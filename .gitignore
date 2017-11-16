@@ -1,0 +1,34 @@
+*.csv
+*.dat
+*.iml
+*.log
+*.out
+*.pid
+*.seed
+*.sublime-*
+*.swo
+*.swp
+*.tgz
+*.xml
+.DS_Store
+.idea
+.project
+.strong-pm
+.datastore
+coverage
+npm-debug.log
+passenger.*
+yarn-error.log
+package-lock.json
+.gitlab-ci.yml
+
+# Folders
+node_modules/
+.nosync/
+.vscode/
+tmp/
+server/storage/uploaded/
+
+# personal config
+/server/**/*.local.*
+!/server/config.local.js

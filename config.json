@@ -1,0 +1,7 @@
+{
+  "StorePath": "/.skm",
+  "SSHPath": "/.ssh",
+  "PublicKey":"id_rsa.pub",
+	"PrivateKey":"id_rsa",
+	"DefaultKey": "default"
+}
