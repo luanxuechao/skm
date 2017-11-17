@@ -2,7 +2,6 @@ const fs = require('fs');
 var Promise = require("bluebird");
 module.exports = {
   exists: function(dir) {
-    console.log(dir);
     return new Promise(function(resolve, reject) {
       fs.stat(dir, function(err, exists) {
         if (exists) {
@@ -44,5 +43,16 @@ module.exports = {
         return resolve(true);
       })
     });
+  },
+  readdir: function(dir){
+    return new Promise(function(resolve, reject) {
+      fs.readdir(dir,function(err,files){
+        if(err) return reject(err);
+        return resolve(files);
+      });
+    })
+  },
+  readFileSync:function(path){
+    return fs.readFileSync(path);
   }
 }
