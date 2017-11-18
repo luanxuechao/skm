@@ -31,7 +31,6 @@ module.exports = {
   },
   list: async function() {
      let storeKeys = await util.LoadSSHKeys();
-    // let defaultkey = fileUtil.readFileSync(path.join(SSHPath, config.PublicKey));
     for (let key of storeKeys.keys()) {
       let inUse  = await util.IsDefault(key);
       if (inUse) {
@@ -113,6 +112,5 @@ module.exports = {
     } catch(err){
       util.error(err.message);
     }
-
   }
 };
