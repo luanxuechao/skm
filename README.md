@@ -4,7 +4,7 @@ SKM is a simple and powerful SSH Keys Manager. It helps you to manage your multi
 
 ## Installation
 ```bash
-npm install skm -g
+npm install node-skm -g
 ```
 ## Usage
 ### init
