@@ -44,4 +44,20 @@ program
     manager.create(name,options);
   });
 
+program
+  .command('use [name]')
+  .description('use SSH keys')
+  .action(function(name){
+    manager.use(name);
+  });
+
+
+program
+  .command('delete [name]')
+  .description('delete SSH keys')
+  .action(function(name){
+    manager.delKey(name);
+  });
+
+
 program.parse(process.argv);

@@ -1,5 +1,6 @@
 const fs = require('fs');
 var Promise = require("bluebird");
+const rimraf = require('rimraf');
 module.exports = {
   exists: function(dir) {
     return new Promise(function(resolve, reject) {
@@ -54,5 +55,13 @@ module.exports = {
   },
   readFileSync:function(path){
     return fs.readFileSync(path);
+  },
+  rmdir: function(path){
+    return new Promise(function(resolve, reject) {
+      rimraf(path,function(err){
+        if(err) return reject(err);
+        return resolve(true);
+      });
+    })
   }
 }
