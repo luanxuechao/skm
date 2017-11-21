@@ -1,63 +1,54 @@
 #! /usr/bin/env node
-'use strict';
-const program = require('commander');
-const os = require('os');
-const manager = require('./src/manager');
-program
-  .version('1.0.0')
-  .option('-f, --foo', 'enable some foo', function() {
+ 'use strict'
+ const program = require('commander')
+ const manager = require('./src/manager')
+ const PackageProperty = require('./package.json')
 
-  })
-  .option('-b, --bar', 'enable some bar')
-  .option('-B, --baz', 'enable some baz');
+ program
+  .version(PackageProperty.version)
 
-// must be before .parse() since
-// node's emit() is immediate
+ program.on('--help', function () {
+   console.log('  Examples:')
+   console.log('')
+   console.log('    $ skm init')
+   console.log('    $ skm ls')
+   console.log('')
+ })
 
-program.on('--help', function() {
-  console.log('  Examples:');
-  console.log('');
-  console.log('    $ custom-help --help');
-  console.log('    $ custom-help -h');
-  console.log('');
-});
-
-program
+ program
   .command('init')
   .description('init SSH key store')
-  .action(function() {
-    manager.init();
-  });
+  .action(function () {
+    manager.init()
+  })
 
-program
+ program
   .command('ls')
   .description('List all the available SSH keys')
-  .action(function() {
-    manager.list();
-  });
+  .action(function () {
+    manager.list()
+  })
 
-program
+ program
   .command('create [name]')
   .description('List all the available SSH keys')
   .option('-C,--email [email]')
-  .action(function(name,options) {
-    manager.create(name,options);
-  });
+  .action(function (name, options) {
+    manager.create(name, options)
+  })
 
-program
+ program
   .command('use [name]')
   .description('use SSH keys')
-  .action(function(name){
-    manager.use(name);
-  });
+  .action(function (name) {
+    manager.use(name)
+  })
 
-
-program
+ program
   .command('delete [name]')
   .description('delete SSH keys')
-  .action(function(name){
-    manager.delKey(name);
-  });
+  .action(function (name) {
+    manager.delKey(name)
+  })
 
-
-program.parse(process.argv);
+ program.parse(process.argv)
