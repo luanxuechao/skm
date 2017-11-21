@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 'use strict';
-var program = require('commander');
-var os = require('os');
+const program = require('commander');
+const os = require('os');
 const manager = require('./src/manager');
 program
   .version('1.0.0')

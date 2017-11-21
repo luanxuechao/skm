@@ -1,5 +1,5 @@
 const fs = require('fs');
-var Promise = require("bluebird");
+const Promise = require("bluebird");
 const rimraf = require('rimraf');
 module.exports = {
   exists: function(dir) {

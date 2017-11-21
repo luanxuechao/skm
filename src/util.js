@@ -1,5 +1,5 @@
-var Promise = require("bluebird");
-var color = require('colors-cli')
+const Promise = require("bluebird");
+const color = require('colors-cli')
 const homedir = require('os').homedir();
 const config = require('../config.js');
 const StorePath = homedir + config.StorePath;
