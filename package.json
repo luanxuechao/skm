@@ -7,8 +7,9 @@
     "skm": "index.js"
   },
   "scripts": {
-    "test": "standard",
-    "standard": "standard --fix"
+    "test": "mocha test/test.js",
+    "fixStandard": "standard --fix",
+    "standard": "standard"
   },
   "keywords": [
     "ssh",
@@ -18,10 +19,12 @@
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.1",
+    "chai": "^4.1.2",
+    "colors-cli": "^1.0.9",
     "commander": "^2.11.0",
     "readline": "^1.3.0",
     "rimraf": "^2.6.2",
-    "colors-cli": "^1.0.9"
+    "shelljs": "^0.7.8"
   },
   "repository": {
     "type": "",

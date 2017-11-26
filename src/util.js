@@ -52,7 +52,7 @@ module.exports = {
       })
     })
   },
-  IsDefault: function (storePath,sshPath,name) {
+  IsDefault: function (storePath, sshPath, name) {
     return new Promise(async function (resolve, reject) {
       let exists = await fileUtil.exists(path.join(sshPath, config.PrivateKey))
       if (!exists) {

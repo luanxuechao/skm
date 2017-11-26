@@ -7,7 +7,7 @@ module.exports = {
       fs.stat(dir, function (err, exists) {
         if (exists) {
           return resolve(true)
-        } else if (err.errno === '-2') {
+        } else if (err.errno === -2) {
           return resolve(false)
         } else {
           return reject(err)

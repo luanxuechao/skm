@@ -5,14 +5,14 @@ const util = require('./util')
 const path = require('path')
 const childProcess = require('child_process')
 class Manager {
-  constructor(sshPath, storePath) {
-    this.sshPath = sshPath;
-    this.storePath = storePath;
+  constructor (sshPath, storePath) {
+    this.sshPath = sshPath
+    this.storePath = storePath
   }
-  async init() {
+  async init () {
     try {
-      const StorePath = this.storePath;
-      const SSHPath = this.sshPath;
+      const StorePath = this.storePath
+      const SSHPath = this.sshPath
       let exists = await fileUtil.exists(StorePath)
       if (!exists) {
         await fileUtil.mkdir(StorePath)
@@ -31,10 +31,10 @@ class Manager {
       util.error(err.message)
     }
   }
-  async list() {
-    const StorePath = this.storePath;
-    const SSHPath = this.sshPath;
-    let storeKeys = await util.LoadSSHKeys(StorePath);
+  async list () {
+    const StorePath = this.storePath
+    const SSHPath = this.sshPath
+    let storeKeys = await util.LoadSSHKeys(StorePath)
     for (let key of storeKeys.keys()) {
       let inUse = await util.IsDefault(StorePath, SSHPath, key)
       if (inUse) {
@@ -44,12 +44,12 @@ class Manager {
       }
     }
   }
-  async create(name, options) {
+  async create (name, options) {
     try {
       if (!name) {
         return util.error('Please input key alias name!')
       }
-      const StorePath = this.storePath;
+      const StorePath = this.storePath
       let storeKeys = await util.LoadSSHKeys(StorePath)
       for (let key of storeKeys.keys()) {
         if (key === name) {
@@ -65,7 +65,7 @@ class Manager {
       argv += '-f'
       argv += ' ' + path.join(StorePath, name, 'id_rsa')
       console.log('ssh-keygen ' + argv)
-      childProcess.exec('ssh-keygen ' + argv, function(err, stdout, stderr) {
+      childProcess.exec('ssh-keygen ' + argv, function (err, stdout, stderr) {
         if (err) console.log(err)
         util.log(stdout)
       })
@@ -73,13 +73,13 @@ class Manager {
       util.error(err.message)
     }
   }
-  async use(name) {
+  async use (name) {
     try {
       if (!name) {
         return util.error('Please input key alias name!')
       }
-      const StorePath = this.storePath;
-      const SSHPath = this.sshPath;
+      const StorePath = this.storePath
+      const SSHPath = this.sshPath
       let exists = await fileUtil.exists(path.join(StorePath, name))
       if (!exists) {
         return util.error('this alias name not found!')
@@ -91,9 +91,9 @@ class Manager {
       util.error(err.message)
     }
   }
-  async delKey(name) {
-    const StorePath = this.storePath;
-    const SSHPath = this.sshPath;
+  async delKey (name) {
+    const StorePath = this.storePath
+    const SSHPath = this.sshPath
     try {
       if (!name) {
         return util.error('Please input key alias name!')
