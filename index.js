@@ -1,54 +1,59 @@
 #! /usr/bin/env node
- 'use strict'
- const program = require('commander')
- const manager = require('./src/manager')
- const PackageProperty = require('./package.json')
+'use strict'
+const program = require('commander')
+const Manager = require('./src/manager')
+const PackageProperty = require('./package.json')
+const config = require('./config.js')
+const homedir = require('os').homedir()
+const StorePath = homedir + config.StorePath
+const SSHPath = homedir + config.SSHPath
 
- program
+const  manager = new Manager(SSHPath,StorePath);
+program
   .version(PackageProperty.version)
 
- program.on('--help', function () {
-   console.log('  Examples:')
-   console.log('')
-   console.log('    $ skm init')
-   console.log('    $ skm ls')
-   console.log('')
- })
+program.on('--help', function() {
+  console.log('  Examples:')
+  console.log('')
+  console.log('    $ skm init')
+  console.log('    $ skm ls')
+  console.log('')
+})
 
- program
+program
   .command('init')
   .description('init SSH key store')
-  .action(function () {
+  .action(function() {
     manager.init()
   })
 
- program
+program
   .command('ls')
   .description('List all the available SSH keys')
-  .action(function () {
+  .action(function() {
     manager.list()
   })
 
- program
+program
   .command('create [name]')
   .description('List all the available SSH keys')
   .option('-C,--email [email]')
-  .action(function (name, options) {
+  .action(function(name, options) {
     manager.create(name, options)
   })
 
- program
+program
   .command('use [name]')
   .description('use SSH keys')
-  .action(function (name) {
+  .action(function(name) {
     manager.use(name)
   })
 
- program
+program
   .command('delete [name]')
   .description('delete SSH keys')
-  .action(function (name) {
+  .action(function(name) {
     manager.delKey(name)
   })
 
- program.parse(process.argv)
+program.parse(process.argv)

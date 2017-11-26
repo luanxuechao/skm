@@ -1,15 +1,18 @@
 'use strict'
 const config = require('../config.js')
-const homedir = require('os').homedir()
 const fileUtil = require('./fileUtil.js')
 const util = require('./util')
 const path = require('path')
-const StorePath = homedir + config.StorePath
-const SSHPath = homedir + config.SSHPath
 const childProcess = require('child_process')
-module.exports = {
-  init: async function () {
+class Manager {
+  constructor(sshPath, storePath) {
+    this.sshPath = sshPath;
+    this.storePath = storePath;
+  }
+  async init() {
     try {
+      const StorePath = this.storePath;
+      const SSHPath = this.sshPath;
       let exists = await fileUtil.exists(StorePath)
       if (!exists) {
         await fileUtil.mkdir(StorePath)
@@ -27,29 +30,33 @@ module.exports = {
     } catch (err) {
       util.error(err.message)
     }
-  },
-  list: async function () {
-    let storeKeys = await util.LoadSSHKeys()
+  }
+  async list() {
+    const StorePath = this.storePath;
+    const SSHPath = this.sshPath;
+    let storeKeys = await util.LoadSSHKeys(StorePath);
     for (let key of storeKeys.keys()) {
-      let inUse = await util.IsDefault(key)
+      let inUse = await util.IsDefault(StorePath, SSHPath, key)
       if (inUse) {
         util.success('* ' + key)
       } else {
         util.log(key)
       }
     }
-  },
-  create: async function (name, options) {
+  }
+  async create(name, options) {
     try {
       if (!name) {
         return util.error('Please input key alias name!')
       }
-      let storeKeys = await util.LoadSSHKeys()
+      const StorePath = this.storePath;
+      let storeKeys = await util.LoadSSHKeys(StorePath)
       for (let key of storeKeys.keys()) {
         if (key === name) {
           return util.error('SSH key alias already exists, please choose another one')
         }
       }
+      await fileUtil.mkdir(path.join(StorePath, name))
       let argv = ''
       if (options.email) {
         argv += '-C '
@@ -58,19 +65,21 @@ module.exports = {
       argv += '-f'
       argv += ' ' + path.join(StorePath, name, 'id_rsa')
       console.log('ssh-keygen ' + argv)
-      childProcess.exec('ssh-keygen ' + argv, function (err, stdout, stderr) {
+      childProcess.exec('ssh-keygen ' + argv, function(err, stdout, stderr) {
         if (err) console.log(err)
         util.log(stdout)
       })
     } catch (err) {
       util.error(err.message)
     }
-  },
-  use: async function (name) {
+  }
+  async use(name) {
     try {
       if (!name) {
         return util.error('Please input key alias name!')
       }
+      const StorePath = this.storePath;
+      const SSHPath = this.sshPath;
       let exists = await fileUtil.exists(path.join(StorePath, name))
       if (!exists) {
         return util.error('this alias name not found!')
@@ -81,8 +90,10 @@ module.exports = {
     } catch (err) {
       util.error(err.message)
     }
-  },
-  delKey: async function (name) {
+  }
+  async delKey(name) {
+    const StorePath = this.storePath;
+    const SSHPath = this.sshPath;
     try {
       if (!name) {
         return util.error('Please input key alias name!')
@@ -92,7 +103,7 @@ module.exports = {
         return util.error('this alias name not found!')
       }
       let text
-      let inUse = await util.IsDefault(name)
+      let inUse = await util.IsDefault(StorePath, SSHPath, name)
       if (inUse) {
         text = `SSH key [${name}]  is currently in use, please confirm to delete it [y/n]:`
       } else {
@@ -104,7 +115,7 @@ module.exports = {
       }
       await fileUtil.rmdir(path.join(StorePath, name))
       if (inUse) {
-        util.clearKey()
+        util.clearKey(SSHPath)
       }
       util.success(`SSH key [${name}] deleted`)
     } catch (err) {
@@ -112,3 +123,5 @@ module.exports = {
     }
   }
 }
+
+module.exports = Manager

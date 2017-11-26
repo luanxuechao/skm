@@ -1,9 +1,6 @@
 const Promise = require('bluebird')
 const color = require('colors-cli')
-const homedir = require('os').homedir()
 const config = require('../config.js')
-const StorePath = homedir + config.StorePath
-const SSHPath = homedir + config.SSHPath
 const fileUtil = require('./fileUtil.js')
 const path = require('path')
 const fs = require('fs')
@@ -21,13 +18,13 @@ module.exports = {
   error: function (text) {
     console.log(color.red(text))
   },
-  LoadSSHKeys: async function () {
+  LoadSSHKeys: async function (storePath) {
     let sshKeys = new Map()
-    let exists = await fileUtil.exists(StorePath)
+    let exists = await fileUtil.exists(storePath)
     if (!exists) {
       return module.exports.error('please execute this command after init !')
     }
-    let files = await fileUtil.readdir(StorePath)
+    let files = await fileUtil.readdir(storePath)
     if (files.length === 0) {
       return module.exports.warn('You don\'t have any SSH key !')
     }
@@ -39,7 +36,7 @@ module.exports = {
       files.splice(DSindex, 1)
     }
     files.forEach(element => {
-      sshKeys.set(element, fs.readFileSync(path.join(StorePath, element, config.PublicKey)))
+      sshKeys.set(element, fs.readFileSync(path.join(storePath, element, config.PublicKey)))
     })
     return sshKeys
   },
@@ -55,14 +52,14 @@ module.exports = {
       })
     })
   },
-  IsDefault: function (name) {
+  IsDefault: function (storePath,sshPath,name) {
     return new Promise(async function (resolve, reject) {
-      let exists = await fileUtil.exists(path.join(SSHPath, config.PrivateKey))
+      let exists = await fileUtil.exists(path.join(sshPath, config.PrivateKey))
       if (!exists) {
         return resolve(false)
       }
-      let defaultkey = fileUtil.readFileSync(path.join(SSHPath, config.PublicKey))
-      let key = fs.readFileSync(path.join(StorePath, name, config.PublicKey))
+      let defaultkey = fileUtil.readFileSync(path.join(sshPath, config.PublicKey))
+      let key = fs.readFileSync(path.join(storePath, name, config.PublicKey))
       if (key.toString() === defaultkey.toString()) {
         resolve(true)
       } else {
@@ -70,8 +67,8 @@ module.exports = {
       }
     })
   },
-  clearKey: function () {
-    fs.unlinkSync(path.join(SSHPath, config.PublicKey))
-    fs.unlinkSync(path.join(SSHPath, config.PrivateKey))
+  clearKey: function (sshPath) {
+    fs.unlinkSync(path.join(sshPath, config.PublicKey))
+    fs.unlinkSync(path.join(sshPath, config.PrivateKey))
   }
 }
