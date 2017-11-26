@@ -3,7 +3,7 @@ const config = require('../config.js')
 const fileUtil = require('./fileUtil.js')
 const util = require('./util')
 const path = require('path')
-const childProcess = require('child_process')
+const shell = require('shelljs')
 class Manager {
   constructor (sshPath, storePath) {
     this.sshPath = sshPath
@@ -64,11 +64,8 @@ class Manager {
       }
       argv += '-f'
       argv += ' ' + path.join(StorePath, name, 'id_rsa')
-      console.log('ssh-keygen ' + argv)
-      childProcess.exec('ssh-keygen ' + argv, function (err, stdout, stderr) {
-        if (err) console.log(err)
-        util.log(stdout)
-      })
+      shell.exec(`ssh-keygen ${argv} -N ${options.passphrase}`)
+      util.success(`create ${name} ssh key success`)
     } catch (err) {
       util.error(err.message)
     }
