@@ -1,6 +1,6 @@
 {
   "name": "node-skm",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "ssh key manager",
   "main": "index.js",
   "bin": {
