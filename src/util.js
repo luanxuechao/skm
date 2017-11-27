@@ -5,6 +5,7 @@ const fileUtil = require('./fileUtil.js')
 const path = require('path')
 const fs = require('fs')
 const readline = require('readline')
+const configFile = require('../config.json')
 module.exports = {
   log: function (text, type) {
     console.log(color.blue(text))
@@ -70,5 +71,12 @@ module.exports = {
   clearKey: function (sshPath) {
     fs.unlinkSync(path.join(sshPath, config.PublicKey))
     fs.unlinkSync(path.join(sshPath, config.PrivateKey))
+  },
+  setResgistry: function (url) {
+    configFile['StorePath'] = url
+    console.log(typeof configFile)
+    console.log(path.resolve(__dirname, '../config.json'))
+    fs.writeFileSync(path.resolve(__dirname, '../config.json'), JSON.stringify(configFile))
   }
+
 }

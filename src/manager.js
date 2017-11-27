@@ -4,9 +4,13 @@ const fileUtil = require('./fileUtil.js')
 const util = require('./util')
 const path = require('path')
 const shell = require('shelljs')
+const fs = require('fs-extra')
 class Manager {
   constructor (sshPath, storePath) {
     this.sshPath = sshPath
+    this.storePath = storePath
+  }
+  setStorePath (storePath) {
     this.storePath = storePath
   }
   async init () {
@@ -71,12 +75,12 @@ class Manager {
     }
   }
   async use (name) {
+    const StorePath = this.storePath
+    const SSHPath = this.sshPath
     try {
       if (!name) {
         return util.error('Please input key alias name!')
       }
-      const StorePath = this.storePath
-      const SSHPath = this.sshPath
       let exists = await fileUtil.exists(path.join(StorePath, name))
       if (!exists) {
         return util.error('this alias name not found!')
@@ -118,6 +122,46 @@ class Manager {
     } catch (err) {
       util.error(err.message)
     }
+  }
+  async rename (oldName, newName) {
+    try {
+      if (!oldName || !newName) {
+        return util.error('Please input key alias name!')
+      }
+      const StorePath = this.storePath
+      let storeKeys = await util.LoadSSHKeys(StorePath)
+      let isBe = false
+      for (let key of storeKeys.keys()) {
+        if (key === oldName) {
+          isBe = true
+        }
+        if (key === newName) {
+          return util.error('SSH key alias already exists, please choose another one')
+        }
+      }
+      if (!isBe) {
+        return util.error('SSH key alias not exists, please choose another one to rename')
+      }
+      await fileUtil.mkdir(path.join(StorePath, newName))
+      await fileUtil.copyFile(path.join(StorePath, oldName, config.PrivateKey), path.join(StorePath, newName, config.PrivateKey))
+      await fileUtil.copyFile(path.join(StorePath, oldName, config.PublicKey), path.join(StorePath, newName, config.PublicKey))
+      await fileUtil.rmdir(path.join(StorePath, oldName))
+      return util.success(`SSH key alias rename ${newName}`)
+    } catch (err) {
+      util.error(err.message)
+    }
+  }
+  async setRegistry (url) {
+    const StorePath = this.storePath
+    let confirm = await util.stdin(`please confirm to remove SSH keys(${url}) [y/n]:`)
+    if (confirm !== 'y') {
+      return false
+    }
+    fs.moveSync(StorePath, url)
+    util.setResgistry(url)
+    console.log(222)
+    util.success(`SSH keys  remove to  ${url}  success`)
+    return true
   }
 }
 
