@@ -35,5 +35,5 @@ skm rename [oldName] [newName] // rename a ssh key
 
 ### registry
 ```bash
-skm registry [path]  // remove ssh key File
+skm registry [path]  // move ssh key File
 ```
