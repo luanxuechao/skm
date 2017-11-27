@@ -27,3 +27,13 @@ skm use [name]  // use  a ssh key
 ```bash
 skm delete [name]  // delete a ssh key
 ```
+
+### rename
+```bash
+skm rename [oldName] [newName] // rename a ssh key
+```
+
+### registry
+```bash
+skm registry [path]  // remove ssh key File
+```
